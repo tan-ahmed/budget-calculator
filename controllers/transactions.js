@@ -19,10 +19,10 @@ exports.getTransactions = async (req, res, next) => {
             count: transactions.length,
             data: transactions
         });
-    } catch(err) {
+    } catch (err) {
         // server error
-        return res.send(500).json({
-            sucess: false,
+        return res.status(500).json({
+            success: false,
             error: 'Server error'
         });
     }
@@ -32,7 +32,39 @@ exports.getTransactions = async (req, res, next) => {
 // @route POST /api/v1/transactions
 // @access Public
 exports.addTransactions = async (req, res, next) => {
-    res.send('POST transactions')
+    // res.send('POST transactions')
+    try {
+        // this is the data sent to create a transaction
+        // will only accept fields in our model
+        const { text, amount } = req.body;
+        // create is a mongoose method 
+        const transaction = await Transaction.create(req.body);
+        // 201 is success
+        return res.status(201).json({
+            success: true,
+            data: transaction
+        })
+    } catch (err) {
+        // to prevent hang, don't just console log
+        // console.log(err);
+        if (err.name === 'ValidationError') {
+            const messages = Object.values(err.errors).map(val => val.message);
+            // 400 client/user error - did not send what they were meant to
+            return res.status(400).json({
+                success: false,
+                error: messages
+            })
+        } else {
+            return res.status(500).json({
+                success: false,
+                error: 'Server error'
+            });
+        }
+
+    }
+
+
+
 }
 
 // @desc delete transactions

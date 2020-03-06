@@ -14,6 +14,9 @@ const transactions = require('./routes/transactions');
 // init express app
 const app = express();
 
+// allows us to use body parser
+app.use(express.json());
+
 // whenever we make a request to this, it should route to the transactions file
 app.use('/api/v1/transactions', transactions);
 
