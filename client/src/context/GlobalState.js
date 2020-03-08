@@ -63,13 +63,27 @@ export const GlobalProvider = ({ children }) => {
     }
 
     // actions - calls to reducer
-    function addTransaction(transaction) {
-        // dispatch an object to our reducer
-        dispatch({
-            type: 'ADD_TRANSACTION',
-            // sends our ID
-            payload: transaction
-        });
+    async function addTransaction(transaction) {
+        const config = {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }
+        try {
+            // URL, data, config(headers)
+           const res = await axios.post('/api/v1/transactions', transaction, config);
+            // dispatch an object to our reducer
+            dispatch({
+                type: 'ADD_TRANSACTION',
+                payload: res.data.data
+            });
+        } catch (err){
+            dispatch({
+                type: 'TRANSACTION_ERROR',
+                payload: err.response.data.error
+            })
+        }
+
     }
 
     // provides states, actions to components to its wrapped around
