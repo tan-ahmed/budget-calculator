@@ -35,7 +35,8 @@ if(process.env.NODE_ENV === 'production'){
 }
 
 // access global variables using process
-const PORT = process.env.PORT || 5000;
+// const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 80;
 
 // to run server
 app.listen(PORT, console.log(`Server running in ${process.env.NODE_ENV} on port ${PORT}`.yellow.bold));
