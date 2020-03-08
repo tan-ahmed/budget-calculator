@@ -1,8 +1,13 @@
 import React, { createContext, useReducer } from 'react';
-import AppReducer from "./AppReducer"
-import axios from 'axios'
+import AppReducer from "./AppReducer";
+import axios from 'axios';
 
-// initial state
+// 1. setup initial state as empty
+// 2. function getTransaction gets called in TransactionsList from the backend
+// 3. dispatch GET_TRANSACTIONS in our provider/reducer, send data as payload
+// 4. in reducer, changes the state to the latest global state
+
+
 // fetch from backend, get transactions state and send down to provider, then grab from component
 const initialState = {
     // { id: 1, text: 'Flower', amount: -20 }

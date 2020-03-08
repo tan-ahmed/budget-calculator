@@ -17,6 +17,7 @@ const app = express();
 // allows us to use body parser
 app.use(express.json());
 
+// shows api calls in terminal
 if(process.env.NODE_ENV === 'development'){
     app.use(morgan('dev'));
 }
