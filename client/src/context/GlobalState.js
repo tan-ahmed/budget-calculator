@@ -1,27 +1,44 @@
 import React, { createContext, useReducer } from 'react';
 import AppReducer from "./AppReducer"
-
+import axios from 'axios'
 
 // initial state
+// fetch from backend, get transactions state and send down to provider, then grab from component
 const initialState = {
-    transactions: [
-        // { id: 1, text: 'Flower', amount: -20 },
-        // { id: 2, text: 'Salary', amount: 300 },
-        // { id: 3, text: 'Book', amount: -10 },
-        // { id: 4, text: 'Camera', amount: 150 }
-    ]
+    // { id: 1, text: 'Flower', amount: -20 }
+    transactions: [],
+    error: null,
+    loading: true
 }
 
 // Create context 
 export const GlobalContext = createContext(initialState)
 
-// other components to access globalstate - requires provider
-// Provider component
+// This is provider component - allows other components to access global state 
+// we will do all our requests through actions
 export const GlobalProvider = ({ children }) => {
     const [state, dispatch] = useReducer(AppReducer, initialState);
 
+    async function getTransactions() {
+        try {
+            const res = await axios.get('/api/v1/transactions');
+            // console.log(res.data.data)
+
+            // dispatch to our reducer - make request, send results to state
+            dispatch({
+                type: 'GET_TRANSACTIONS',
+                payload: res.data.data
+            })
+        } catch (err) {
+            dispatch({
+                type: 'TRANSACTION_ERROR',
+                payload: err.response.data.error
+            })
+        }
+    }
+
     // actions - calls to reducer
-    function deleteTransaction(id){
+    function deleteTransaction(id) {
         // dispatch an object to our reducer
         dispatch({
             type: 'DELETE_TRANSACTION',
@@ -31,7 +48,7 @@ export const GlobalProvider = ({ children }) => {
     }
 
     // actions - calls to reducer
-    function addTransaction(transaction){
+    function addTransaction(transaction) {
         // dispatch an object to our reducer
         dispatch({
             type: 'ADD_TRANSACTION',
@@ -43,10 +60,13 @@ export const GlobalProvider = ({ children }) => {
     // provides states, actions to components to its wrapped around
     return (<GlobalContext.Provider value={{
         transactions: state.transactions,
-        // Pass function down into provider
+        error: state.error,
+        loading: state.loading,
+        // Pass functions down into provider
+        getTransactions,
         deleteTransaction,
         addTransaction
-        }}>
+    }}>
         {children}
     </GlobalContext.Provider>)
 }

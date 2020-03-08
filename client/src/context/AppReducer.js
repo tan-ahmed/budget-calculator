@@ -2,12 +2,18 @@
 // way to change your state and send down to component
 export default (state, action) => {
     switch(action.type) {
+        case 'GET_TRANSACTIONS':
+            return { 
+                // return whats in our state
+                ...state,
+                loading: false,
+                transactions: action.payload
+            }
         case 'DELETE_TRANSACTION':
             return {
                 // uses spread operator to send current state
-                // change transactions value
                 ...state,
-                // filter out anything with tat ID
+                // filter out anything with that ID
                 transactions: state.transactions.filter(transaction => transaction.id !== action.payload)
             }
         case 'ADD_TRANSACTION':
@@ -15,7 +21,13 @@ export default (state, action) => {
                 ...state,
                 // ...state.transaction - this takes out entire array
                 // action.payload is the new transaction
-                transactions: [action.payload, ...state.transactions]
+                // the new one comes in the payload and is added after the rest of them
+                transactions: [...state.transactions, action.payload]
+            }
+        case 'TRANSACTION_ERROR':
+            return {
+                ...state,
+                error: action.payload
             }
         default:
             return state;
