@@ -1,13 +1,24 @@
-import React, {useContext} from 'react'
+import React, {useContext, useEffect} from 'react'
 // pull global state
 import { GlobalContext } from '../context/GlobalState'
 import { Transaction } from './Transaction'
 
+
+
 export const TransactionList = () => {
     // pull from global context
     // destructuring array from object
-    const {transactions} = useContext(GlobalContext);
-    console.log(transactions)
+    const {transactions, getTransactions } = useContext(GlobalContext);
+    // console.log(transactions)
+
+    //use useEffect for any HTTP Request
+    useEffect(() => {
+        getTransactions();
+        // use empty array [] to prevent infinite loop
+        // prevent console errors
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return (
         <>
             <h3>History</h3>
