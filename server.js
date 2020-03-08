@@ -4,6 +4,7 @@ const dotenv = require('dotenv');
 const colors = require('colors');
 const morgan = require('morgan');
 const connectDB = require('./config/db');
+const path = require('path');
 
 dotenv.config({ path: './config/config.env' });
 
@@ -24,6 +25,14 @@ if(process.env.NODE_ENV === 'development'){
 
 // whenever we make a request to this, it should route to the transactions file
 app.use('/api/v1/transactions', transactions);
+
+
+if(process.env.NODE_ENV === 'production'){
+    app.use(express.static('client/build'));
+
+    // make a request to anything except API route, it will load index.html
+    app.get('*', (req, res) => res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html' )));
+}
 
 // access global variables using process
 const PORT = process.env.PORT || 5000;
