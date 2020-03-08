@@ -14,7 +14,7 @@ export default (state, action) => {
                 // uses spread operator to send current state
                 ...state,
                 // filter out anything with that ID
-                transactions: state.transactions.filter(transaction => transaction.id !== action.payload)
+                transactions: state.transactions.filter(transaction => transaction._id !== action.payload)
             }
         case 'ADD_TRANSACTION':
             return {

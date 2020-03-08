@@ -43,13 +43,23 @@ export const GlobalProvider = ({ children }) => {
     }
 
     // actions - calls to reducer
-    function deleteTransaction(id) {
-        // dispatch an object to our reducer
-        dispatch({
-            type: 'DELETE_TRANSACTION',
-            // sends our ID
-            payload: id
-        });
+    async function deleteTransaction(id) {
+        try {
+            // deletes from database first , then UI
+            await axios.delete(`/api/v1/transactions/${id}`)
+            // dispatch an object to our reducer
+            dispatch({
+                type: 'DELETE_TRANSACTION',
+                // sends our ID
+                payload: id
+            });
+        } catch (err){
+            dispatch({
+                type: 'TRANSACTION_ERROR',
+                payload: err.response.data.error
+            })
+        }
+
     }
 
     // actions - calls to reducer
